@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-// import Popup from "reactjs-popup";
-// import "reactjs-popup/dist/index.css";
+// import logo from "./assets/lightBg1.jpg";
+import logo from "./assets/bg1.jpg";
 
 const Student = () => {
   const [student, setStudent] = useState();
@@ -12,6 +12,7 @@ const Student = () => {
   const [runHandleDelete, setrunHandleDelete] = useState(false);
   const [show, setShow] = useState();
   const [id, setId] = useState();
+  const [theme, settheme] = useState(false);
   ////////////////////////////////////////    ////////////////////////////////////////     loading the data
 
   async function test() {
@@ -71,9 +72,30 @@ const Student = () => {
   // };
   ///////////////////////////////////////////////////////////////////////   return
 
+  console.log(theme);
   return (
     <div>
-      <div className="d-flex vh-100 bg-dark  bg-gradient justify-content-center align-item-center">
+      {/* <div className="d-flex vh-100 bg-dark  bg-gradient justify-content-center align-item-center"> */}
+      {/* <div
+        className={`d-flex vh-100  justify-content-center align-item-center
+        ${theme ? "bg-primary  bg-gradient" : "bg-dark  bg-gradient"}`}
+      > */}
+      <div
+        className={`d-flex vh-100  justify-content-center align-item-center `}
+        style={
+          theme
+            ? {
+                backgroundImage: `url(${logo})`,
+                backgroundPosition: "cover",
+                backgroundSize: "100% 100%",
+                backgroundRepeat: "no-repeat",
+              }
+            : {
+                background: " linear-gradient(black, grey)",
+                // backdropFilter: "blur(10px)",
+              }
+        }
+      >
         {show && (
           <ModalTest
             setrunHandleDelete={setrunHandleDelete}
@@ -81,11 +103,30 @@ const Student = () => {
             setShow={setShow}
           />
         )}
-        <div className="p-5 bg-dark  rounded-5 w-75">
+        {/* <div className="p-5 bg-dark  rounded-5 w-75"> */}
+        <div
+          className="p-5   rounded-5 w-75"
+          style={
+            theme
+              ? { background: "none" }
+              : { background: " linear-gradient(black,grey,black,black)" }
+          }
+        >
           <Link to="/create" className="btn btn-success">
             Add Record +
           </Link>
-          <br />
+          <div className="text-white mt-4 w-50">
+            <label htmlFor="search" className="me-3 fs-3">
+              Search
+            </label>
+            <input
+              type="text"
+              name="search"
+              placeholder="🔎 Enter Your serach query..."
+              className="rounded-4 w-50 p-2   bg-secondary-subtle  border-success
+"
+            />
+          </div>
           <br />
           <br />
 
@@ -105,13 +146,13 @@ const Student = () => {
                 }}
                 role="status"
               >
-                <span className="visually-hidden">Loading...</span>
+                <span className="visually-hidden ">Loading...</span>
               </div>
               <br />
-              <div className="fs-2">Loading List ...</div>
+              <div className="fs-2 text-white">Loading List ...</div>
             </div>
           ) : student.length === 0 ? (
-            <h2 className="text-center">
+            <h2 className="text-center text-white">
               Please <br />
               Add some records... <br />
               🖊💻
@@ -159,6 +200,16 @@ const Student = () => {
               </tbody>
             </table>
           )}
+          {/* <img
+            className="text-white"
+            // src={"./lightBg1.jpg"}
+            src={logo}
+            alt="sssssssssssss"
+          /> */}
+          <div className="position-fixed bottom-0 end-0">
+            <button onClick={() => settheme(false)}>Dark Mode</button>
+            <button onClick={(e) => settheme(true)}>Light Mode</button>
+          </div>
         </div>
       </div>
     </div>
