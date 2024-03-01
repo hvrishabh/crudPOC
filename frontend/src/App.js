@@ -5,6 +5,7 @@ import CreateStudent from "./CreateStudent";
 import UpdateStudent from "./UpdateStudent";
 import MyContext from "./MyContext";
 import { useCookies } from "react-cookie";
+import PaginationData from "./PaginationData";
 
 const App = () => {
   const [cookies, setCookies, removeCookies] = useCookies(["theme"]);
@@ -16,6 +17,7 @@ const App = () => {
             <Route path="/" element={<Student />} />
             <Route path="/create" element={<CreateStudent />} />
             <Route path="/update/:id" element={<UpdateStudent />} />
+            <Route path="/page" element={<PaginationData />} />
           </Routes>
         </BrowserRouter>
       </MyContext.Provider>
