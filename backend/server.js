@@ -91,6 +91,28 @@ app.delete("/student/:id", (req, res) => {
 //   });
 // });
 
+///////////////////////////////////////////////// api for serach query.........
+
+// connection.query(
+//   "SELECT * FROM job where domainname like ?",
+//   ["%" + request.body.domain + "%"],
+//   function (error, results) {
+//     response.render("./results", { rows: results });
+//   }
+// );
+
+app.get("/search", (req, res) => {
+  const search = req.query.query;
+  const sql = "SELECT * FROM student WHERE Name like ? OR Email like ? ";
+  // return res.json(req);
+  db.query(sql, ["%" + search + "%", "%" + search + "%"], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+///////////////////////////////////////////////////////////////////
+
 app.listen(8081, () => {
   console.log("Listening...");
 });
