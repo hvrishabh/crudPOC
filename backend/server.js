@@ -28,6 +28,16 @@ const db = mysql.createConnection({
 //   });
 // });
 
+////////////////////////////////////////////// api to get data
+app.get("/", (req, res) => {
+  // const sql = "SELECT * FROM student ";
+  const sql = "SELECT * FROM student WHERE deletedAt IS NULL ";
+  db.query(sql, (err, data) => {
+    if (err) return res.json("Error in get api...");
+    return res.json(data);
+  });
+});
+
 //////////////// for post request ................
 
 app.post("/create", (req, res) => {
@@ -35,15 +45,6 @@ app.post("/create", (req, res) => {
   const values = [req.body.name, req.body.email];
   db.query(sql, [values], (err, data) => {
     if (err) return res.json(err);
-    return res.json(data);
-  });
-});
-
-////////////////////////////////////////////// api to get data
-app.get("/", (req, res) => {
-  const sql = "SELECT * FROM student";
-  db.query(sql, (err, data) => {
-    if (err) return res.json("Error in get api...");
     return res.json(data);
   });
 });
@@ -74,7 +75,8 @@ app.put("/update/:id", (req, res) => {
 ///////////////////////////////////////////////// api to delete data
 
 app.delete("/student/:id", (req, res) => {
-  const sql = "DELETE FROM student WHERE ID = ?";
+  // const sql = "DELETE FROM student WHERE ID = ?";
+  const sql = "UPDATE student SET deletedAt = NOW()  WHERE ID = ?";
   const id = req.params.id;
   db.query(sql, [id], (err, data) => {
     if (err) res.json("Error in delete api....");
@@ -103,9 +105,28 @@ app.delete("/student/:id", (req, res) => {
 
 app.get("/search", (req, res) => {
   const search = req.query.query;
-  const sql = "SELECT * FROM student WHERE Name like ? OR Email like ? ";
+  // const sql = "SELECT * FROM student WHERE Name like ? OR Email like ?  ";
+  const sql =
+    "SELECT * FROM student WHERE (Name like ? OR Email like ? )AND deletedAt IS NULL ";
   // return res.json(req);
   db.query(sql, ["%" + search + "%", "%" + search + "%"], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+/////////////////////////////////////////// api for sorting query..........
+
+app.get("/sort", (req, res) => {
+  let sort = req.query.sort;
+  sort = sort === "true";
+
+  const sql = sort
+    ? "SELECT * FROM student WHERE deletedAt IS NULL  ORDER BY Name ASC "
+    : "SELECT * FROM student  WHERE deletedAt IS NULL  ORDER BY Name DESC";
+
+  // return res.json(req);
+  db.query(sql, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
   });
