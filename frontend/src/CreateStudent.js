@@ -3,17 +3,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import MyContext from "./MyContext";
 import logo from "./assets/lightBg1.jpg";
+import Validation from "./Validation";
 
 const CreateStudent = () => {
   const [values, setValues] = useState({
     name: "",
     email: "",
   });
-
+  const [errors, setErrors] = useState("");
   const navigate = useNavigate();
-
   const { cookies } = useContext(MyContext);
 
+  //////functions..........
   const handleValues = (e) => {
     setValues((prev) => ({
       ...prev,
@@ -21,15 +22,26 @@ const CreateStudent = () => {
     }));
   };
 
+  ////////////// validation ...
+
+  const handleValidation = () => {
+    setErrors(Validation(values));
+  };
+  //////////// submit function ...........
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios
-      .post("http://localhost:8081/create", values)
-      .then((res) => {
-        // console.log(res)
-        navigate("/");
-      })
-      .catch((err) => console.log(err));
+
+    // setErrors(Validation(values));
+
+    if (errors.name === "" && errors.email === "")
+      await axios
+        .post("http://localhost:8081/create", values)
+        .then((res) => {
+          // console.log(res)
+          navigate("/");
+        })
+        .catch((err) => console.log(err));
   };
 
   ////////////////////////////////////////////////// handlsubmit using the get request ...........................
@@ -86,6 +98,9 @@ const CreateStudent = () => {
               className="form-control"
               onChange={handleValues}
             />
+            {errors.name && (
+              <span className="bg-danger p-1">{errors.name}</span>
+            )}
           </div>
           <div className="mb-2">
             <label htmlFor="email">Email</label>
@@ -96,8 +111,10 @@ const CreateStudent = () => {
               className="form-control"
               onChange={handleValues}
             />
+            {errors.email && <span className="bg-danger">{errors.email}</span>}
           </div>
           <button
+            onClick={handleValidation}
             className={cookies.theme ? "btn btn-success" : "btn btn-dark"}
           >
             Submit
