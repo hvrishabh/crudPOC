@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 // import logo from "./assets/lightBg1.jpg";
 import logo from "./assets/bg1.jpg";
+import { useCookies } from "react-cookie";
+import MyContext from "./MyContext";
 
 const Student = () => {
   const [student, setStudent] = useState();
@@ -12,7 +14,11 @@ const Student = () => {
   const [runHandleDelete, setrunHandleDelete] = useState(false);
   const [show, setShow] = useState();
   const [id, setId] = useState();
-  const [theme, settheme] = useState(false);
+  // const [theme, settheme] = useState(false);
+
+  // const [cookies, setCookies, removeCookies] = useCookies(["theme"]);
+  const { cookies, setCookies } = useContext(MyContext);
+
   ////////////////////////////////////////    ////////////////////////////////////////     loading the data
 
   async function test() {
@@ -70,9 +76,29 @@ const Student = () => {
   //     </Popup>
   //   );
   // };
+  ////////////////////////////////////////////// search function
+
+  // const handleSearch = async (e) => {
+  //   let searchQuery = e.target.value;
+  //   // setSearchQuery(e.target.value);
+
+  //   const res = await fetch(`http://localhost:8081/search?name=${searchQuery}`);
+  //   const data = await res.json();
+  //   console.log(data);
+  //   setStudent(data);
+  // };
+  const handleSearch = async (e) => {
+    let searchQuery = e.target.value;
+    axios
+      .get(`http://localhost:8081/search?query=${searchQuery}`)
+      .then((res) => {
+        setStudent(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
   ///////////////////////////////////////////////////////////////////////   return
 
-  console.log(theme);
   return (
     <div>
       {/* <div className="d-flex vh-100 bg-dark  bg-gradient justify-content-center align-item-center"> */}
@@ -83,7 +109,7 @@ const Student = () => {
       <div
         className={`d-flex vh-100  justify-content-center align-item-center `}
         style={
-          theme
+          cookies.theme
             ? {
                 backgroundImage: `url(${logo})`,
                 backgroundPosition: "cover",
@@ -107,7 +133,7 @@ const Student = () => {
         <div
           className="p-5   rounded-5 w-75"
           style={
-            theme
+            cookies.theme
               ? { background: "none" }
               : { background: " linear-gradient(black,grey,black,black)" }
           }
@@ -123,6 +149,7 @@ const Student = () => {
               type="text"
               name="search"
               placeholder="🔎 Enter Your serach query..."
+              onKeyUp={handleSearch}
               className="rounded-4 w-50 p-2   bg-secondary-subtle  border-success
 "
             />
@@ -178,7 +205,11 @@ const Student = () => {
                         <>
                           <Link
                             to={`/update/${data.ID}`}
-                            className="btn btn-success"
+                            className={
+                              cookies.theme
+                                ? "btn btn-primary"
+                                : "btn btn-success"
+                            }
                           >
                             Update
                           </Link>
@@ -207,8 +238,15 @@ const Student = () => {
             alt="sssssssssssss"
           /> */}
           <div className="position-fixed bottom-0 end-0">
-            <button onClick={() => settheme(false)}>Dark Mode</button>
-            <button onClick={(e) => settheme(true)}>Light Mode</button>
+            <button onClick={() => setCookies("theme", false, { path: "/" })}>
+              Dark Mode
+            </button>
+            <button onClick={() => setCookies("theme", true, { path: "/" })}>
+              Light Mode
+            </button>
+
+            {/* <button onClick={() => settheme(false)}>Dark Mode</button>
+            <button onClick={(e) => settheme(true)}>Light Mode</button> */}
           </div>
         </div>
       </div>
