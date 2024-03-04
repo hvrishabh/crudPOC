@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MyContext from "./MyContext";
 import logo from "./assets/lightBg1.jpg";
 import Validation from "./Validation";
+import WakeUpBtn from "./WakeUpBtn";
 
 const UpdateStudent = () => {
   const [name, setName] = useState("");
@@ -115,6 +116,8 @@ const UpdateStudent = () => {
               Update
             </button>
           </form>
+
+          <WakeUpBtn />
         </div>
       </div>
     </div>
