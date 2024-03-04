@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
@@ -8,20 +8,46 @@ import logo from "./assets/bg1.jpg";
 import styles from "./Student.module.css";
 
 import MyContext from "./MyContext";
+import { CSVLink, CSVDownload } from "react-csv";
+import EmailRestAPI from "./EmailRestAPI";
 
 const Student = () => {
-  const { thElementLight, thElementDark } = styles;
-
-  const [student, setStudent] = useState();
+  const [student, setStudent] = useState([]);
   const [loading, setLoading] = useState(true);
   const [runHandleDelete, setrunHandleDelete] = useState(false);
   const [show, setShow] = useState();
   const [id, setId] = useState();
+
+  const searchInputRef = useRef(null);
+
   // const [theme, settheme] = useState(false);
 
   // const [cookies, setCookies, removeCookies] = useCookies(["theme"]);
   const { cookies, setCookies } = useContext(MyContext);
   const [sortName, setSortName] = useState(false);
+
+  /////////////////......pagination.......
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
+  const lastIndex = currentPage * recordsPerPage;
+  const firstInedx = lastIndex - recordsPerPage;
+  const records = student.slice(firstInedx, lastIndex);
+  const npage = Math.ceil((student.length + 1) / recordsPerPage);
+  const numbers = [...Array(npage + 1).keys()].slice(1);
+
+  function prePage() {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+  function changeCPage(id) {
+    setCurrentPage(id);
+  }
+  function nextPage() {
+    if (currentPage !== npage) {
+      setCurrentPage(currentPage + 1);
+    }
+  }
 
   ////////////////////////////////////////    ////////////////////////////////////////     loading the data
 
@@ -40,7 +66,7 @@ const Student = () => {
   useEffect(() => {
     setTimeout(() => {
       test();
-    }, 300);
+    }, 600);
   }, []);
 
   /////////////////////////////////////////////////////////// handle Delete
@@ -91,14 +117,17 @@ const Student = () => {
   //   console.log(data);
   //   setStudent(data);
   // };
+  let searchQuery = "";
   const handleSearch = async (e) => {
-    let searchQuery = e.target.value;
+    // let searchQuery = e.target.value;
+    searchQuery = e.target.value;
     axios
       .get(`http://localhost:8081/search?query=${searchQuery}`)
       .then((res) => {
         setStudent(res.data);
       })
       .catch((err) => console.log(err));
+    setCurrentPage(1);
   };
 
   /////////////////////////////////////////////////// sort function .......
@@ -114,6 +143,10 @@ const Student = () => {
   };
 
   ///////////////////////////////////////////////////////////////////////   return
+
+  // console.log(student);
+  // console.log(typeof student);
+  // console.log(student === undefined);
 
   return (
     <div
@@ -165,9 +198,22 @@ const Student = () => {
             name="search"
             placeholder="🔎 Enter Your serach query..."
             onKeyUp={handleSearch}
+            id="searchInput"
+            ref={searchInputRef}
             className="rounded-4 w-50 p-2   bg-secondary-subtle  border-success
 "
           />
+          <span className="ms-2 me-5">
+            <button
+              className="btn btn-secondary"
+              onClick={(e) => {
+                test();
+                searchInputRef.current.value = "";
+              }}
+            >
+              ❌
+            </button>
+          </span>
           <span className="ms-2">
             <button
               className={cookies.theme ? "btn btn-primary" : "btn btn-success"}
@@ -179,7 +225,6 @@ const Student = () => {
         </div>
         <br />
         <br />
-
         {loading ? (
           <div
             style={{
@@ -218,7 +263,7 @@ const Student = () => {
               </tr>
             </thead>
             <tbody>
-              {student.map((data, i) => {
+              {records?.map((data, i) => {
                 return (
                   <tr key={i} className="">
                     <td className="fs-md-5 ps-4">{data.ID}</td>
@@ -267,13 +312,77 @@ const Student = () => {
           <button onClick={() => setCookies("theme", true, { path: "/" })}>
             Light Mode
           </button>
-
-          {/* <button onClick={() => settheme(false)}>Dark Mode</button>
-            <button onClick={(e) => settheme(true)}>Light Mode</button> */}
         </div>
+
+        {!loading && (
+          <div>
+            <nav className="pagination">
+              <>
+                <span className="page-item">
+                  {currentPage === 1 ? (
+                    ""
+                  ) : (
+                    <Link
+                      to=""
+                      className="page-link  bg-dark text-white"
+                      onClick={prePage}
+                    >
+                      Prev
+                    </Link>
+                  )}
+                </span>
+
+                {numbers.map((pgNumber) => (
+                  <span
+                    key={pgNumber}
+                    className={`page-item ${
+                      currentPage === pgNumber ? "active" : ""
+                    } `}
+                  >
+                    <Link
+                      to=""
+                      onClick={() => changeCPage(pgNumber)}
+                      className="page-link  bg-dark text-white"
+                    >
+                      {pgNumber}
+                    </Link>
+                  </span>
+                ))}
+
+                <span className="page-item">
+                  {currentPage === npage ? (
+                    ""
+                  ) : (
+                    <Link
+                      to=""
+                      className="page-link bg-dark text-white"
+                      href="#"
+                      onClick={nextPage}
+                    >
+                      Next
+                    </Link>
+                  )}
+                </span>
+              </>
+            </nav>
+          </div>
+        )}
+        {!loading && (
+          <div className="my-5">
+            <CSVLink className="btn btn-dark fs-4" data={student}>
+              Download the Records
+              {/* <CSVDownload data={student} target="_blank" />; */}
+            </CSVLink>
+          </div>
+        )}
+
+        {!loading && (
+          <Link to="contact" className="btn btn-dark">
+            contact Us
+          </Link>
+        )}
       </div>
     </div>
-    // </div>
   );
 };
 
