@@ -52,6 +52,7 @@ const Student = () => {
   ////////////////////////////////////////    ////////////////////////////////////////     loading the data
 
   async function test() {
+    setLoading(true); ////////////////////////////...............?????????????????????????????????????????????????????????????????????????
     try {
       const res = await fetch("http://localhost:8081/");
       if (!res.ok) throw new Error(res.statusText);
@@ -174,7 +175,7 @@ const Student = () => {
       )}
       {/* <div className="p-5 bg-dark  rounded-5 w-75"> */}
       <div
-        className="p-5   rounded-5 w-75"
+        className="p-5 rounded-5 w-75"
         style={
           cookies.theme
             ? { background: "none" }
@@ -183,7 +184,14 @@ const Student = () => {
       >
         <Link
           to="/create"
-          className={cookies.theme ? "btn btn-primary" : "btn btn-success"}
+          // className={
+          //   cookies.theme
+          //     ? "mt-2-sm btn btn-primary"
+          //     : "mt-3-sm btn btn-success"
+          // }
+          className={`mt-2 btn ${
+            cookies.theme ? "btn-primary " : "btn-success"
+          }`}
         >
           Add Record +
         </Link>
@@ -253,51 +261,53 @@ const Student = () => {
             🖊💻
           </h2>
         ) : (
-          <table className=" table table-striped  table table-bordered border-success  table-hover ">
-            <thead>
-              <tr className="">
-                <th className="fs-md-4 bg-success border-dark ps-md-4">ID</th>
-                <th className="fs-md-4 bg-success border-dark">Name</th>
-                <th className="fs-md-4 bg-success border-dark">Email</th>
-                <th className="fs-md-4 bg-success border-dark">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {records?.map((data, i) => {
-                return (
-                  <tr key={i} className="">
-                    <td className="fs-md-5 ps-4">{data.ID}</td>
-                    <td className="fs-md-5 ">{data.Name}</td>
-                    <td className="fs-md-5 ">{data.Email}</td>
-                    <td className="fs-md-5 ">
-                      <>
-                        <Link
-                          to={`/update/${data.ID}`}
-                          className={
-                            cookies.theme
-                              ? "btn btn-primary"
-                              : "btn btn-success"
-                          }
-                        >
-                          Update
-                        </Link>
-                        <button
-                          className="btn btn-danger ms-2"
-                          onClick={(e) => {
-                            // handleDelete(data.ID);
-                            setId(data.ID);
-                            setShow(true);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="table-responsive-sm">
+            <table className=" table table-striped  table table-bordered border-success  table-hover ">
+              <thead>
+                <tr className="">
+                  <th className="fs-md-4 bg-success border-dark ps-md-4">ID</th>
+                  <th className="fs-md-4 bg-success border-dark">Name</th>
+                  <th className="fs-md-4 bg-success border-dark">Email</th>
+                  <th className="fs-md-4 bg-success border-dark">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {records?.map((data, i) => {
+                  return (
+                    <tr key={i} className="">
+                      <td className="fs-md-5 ps-4">{data.ID}</td>
+                      <td className="fs-md-5 ">{data.Name}</td>
+                      <td className="fs-md-5 ">{data.Email}</td>
+                      <td className="fs-md-5 ">
+                        <>
+                          <Link
+                            to={`/update/${data.ID}`}
+                            className={
+                              cookies.theme
+                                ? "btn btn-primary"
+                                : "btn btn-success"
+                            }
+                          >
+                            Update
+                          </Link>
+                          <button
+                            className="btn btn-danger ms-2"
+                            onClick={(e) => {
+                              // handleDelete(data.ID);
+                              setId(data.ID);
+                              setShow(true);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
         {/* <img
             className="text-white"
