@@ -8,7 +8,9 @@ import { useCookies } from "react-cookie";
 import PaginationData from "./PaginationData";
 import EmailRestAPI from "./EmailRestAPI";
 import SendMessage from "./SendMessage";
-import Map from "./Map";
+
+import MapLocation from "./MapLocation";
+import MapLocation2 from "./MapLocation2";
 
 const App = () => {
   const [cookies, setCookies, removeCookies] = useCookies(["theme"]);
@@ -30,7 +32,8 @@ const App = () => {
             <Route path="/page" element={<PaginationData />} />
             <Route path="/contact" element={<EmailRestAPI />} />
             <Route path="/sendMessage" element={<SendMessage />} />
-            <Route path="/map" element={<Map />} />
+            <Route path="/map" element={<MapLocation />} />
+            <Route path="/map2" element={<MapLocation2 />} />
           </Routes>
         </BrowserRouter>
       </MyContext.Provider>

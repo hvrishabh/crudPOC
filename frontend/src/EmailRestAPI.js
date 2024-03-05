@@ -44,9 +44,9 @@ const EmailRestAPI = () => {
   };
 
   return (
-    <div className="bg-dark bg-gradient vh-100 h-100">
-      <h2 className="p-5 text-white">Customer Contact section</h2>
-      <div className="w-25 px-5">
+    <div className="bg-dark bg-gradient vh-100 h-100 d-flex justify-content-center align-items-center">
+      <div className=" px-5 border border-primary p-3">
+        <p className="pt-3 text-white fs-3">Customer Contact section</p>
         <form onSubmit={handleSubmit} className="form-group text-white">
           <div>
             <label className="form-check-label mt-3">Customer Name</label>
