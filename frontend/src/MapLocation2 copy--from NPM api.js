@@ -7,7 +7,6 @@ import "leaflet/dist/leaflet.css";
 import {
   MapContainer,
   Marker,
-  Polyline,
   Popup,
   TileLayer,
   useMapEvent,
@@ -36,11 +35,6 @@ const MapLocation2 = () => {
       popUp: "vadodara",
     },
   ];
-  let polylineIni = [
-    [23.0225, 72.5714],
-    [21.1702, 72.8311],
-    [22.3072, 73.1812],
-  ];
 
   const [isLoading, setIsLoading] = useState(true);
   const [markers, setMarkers] = useState(markers1);
@@ -56,13 +50,11 @@ const MapLocation2 = () => {
   const [stateNew, setStateNew] = useState();
   const [selectedState, setSelectedState] = useState();
   const [cityNew, setCityNew] = useState();
-  const [polyline, setPolyline] = useState(polylineIni);
-  // const [selectedCity, setSelectedCity] = useState();
 
   ////////////////////////////////////////////////////////////////////////
   const countryTest = Country.getAllCountries();
   const stateTest = State.getAllStates();
-  // const cityTest = City.getAllCities();
+  const cityTest = City.getAllCities();
 
   // console.log(countryTest);
   // console.log(stateTest);
@@ -71,10 +63,11 @@ const MapLocation2 = () => {
   const setNewCountry = (e) => {
     e.preventDefault();
     if (e.target.value === "") return;
-    // console.log(e.target.value);
-    let value = e.target.value.split("-");
-    setCtyNew(value[0]);
-    setCountry(value[1]);
+    // let value = e.target.value;
+    // console.log(value.split("").slice(0, 2).join("").toUpperCase());
+    // console.log(finalValueCty);
+    // setCtyNew(value.split("").slice(0, 2).join("").toUpperCase());
+    setCtyNew(e.target.value);
   };
   // console.log(ctyNew);
 
@@ -101,45 +94,37 @@ const MapLocation2 = () => {
   const selectedStateFunction = (e) => {
     console.log(selectedState);
     e.preventDefault();
-    const getNewCities = {
-      method: "get",
-      url: `https://api.countrystatecity.in/v1/countries/${ctyNew}/states/${selectedState}/cities`,
-      headers: {
-        "X-CSCAPI-KEY":
-          "a1B3TDBBYk1YOG9NMGF1aHpkbldjVmtndXgzMmw3TG80VWxEOEs3VQ==",
-      },
-    };
-
-    axios(getNewCities)
-      .then((res) => {
-        setCityNew(res.data);
-        // console.log(res.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-  // console.log(cityNew);
-
-  const settingSelectedCity = (e) => {
-    e.preventDefault();
-    if (e.target.value === "") return;
-    // console.log(e.target.value);
-    setCity(e.target.value);
+    let newCitys = [];
+    let newCityArray = cityTest.filter((city) => {
+      if (city.countryCode === selectedState) return [...newCitys, city];
+      else return null;
+    });
+    console.log(newCityArray);
   };
 
-  const selectedCityFunction = (e) => {
-    e.preventDefault();
-    // console.log("...........");
+  const config = {
+    method: "get",
+    url: "https://api.countrystatecity.in/v1/countries",
+    headers: {
+      "X-CSCAPI-KEY":
+        "a1B3TDBBYk1YOG9NMGF1aHpkbldjVmtndXgzMmw3TG80VWxEOEs3VQ==",
+    },
   };
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
   const getLocationCoordinatesFunc = async (e) => {
     let newMarker;
-    let newPolyLines;
     e.preventDefault();
     setIsLoading(true);
 
-    const url = `https://api.api-ninjas.com/v1/geocoding?city=${city}&state=${selectedState}&country=${country}`;
+    const url = `https://api.api-ninjas.com/v1/geocoding?city=${city}&country=${country}`;
 
     fetch(url, {
       method: "GET",
@@ -155,9 +140,6 @@ const MapLocation2 = () => {
           popUp: response[0].name,
         };
         setMarkers([...markers, newMarker]);
-
-        newPolyLines = [response[0].latitude, response[0].longitude];
-        setPolyline([...polyline, newPolyLines]);
         setIsLoading(false);
       })
       .then(() => {
@@ -181,15 +163,10 @@ const MapLocation2 = () => {
     });
   };
 
-  const purpleOptions = { color: "purple" };
-
   return (
     <div>
       <div className="bg-dark bg-gradient p-5 row justify-content-center ">
-        <form
-          onSubmit={getLocationCoordinatesFunc}
-          className="mb-4 bg-success text-white p-4 border border-primary col-md-6"
-        >
+        <form className="mb-4 bg-success text-white p-4 border border-primary col-md-6">
           <div className="form-group mb-2">
             {/* <label htmlFor="country">Select Country</label> */}
 
@@ -203,7 +180,7 @@ const MapLocation2 = () => {
               </option>
               {countryTest.map((cty, index) => {
                 return (
-                  <option key={index} value={`${cty.isoCode}-${cty.name}`}>
+                  <option key={index} value={`${cty.isoCode}`}>
                     {cty.name}
                   </option>
                 );
@@ -214,14 +191,16 @@ const MapLocation2 = () => {
             </span>
           </div>
           <div className="form-group mb-2">
+            {/* <label htmlFor="state">Select State</label> */}
+
             <select
-              name="stateNew"
+              name="country"
               className="form-control w-50 "
               onClick={settingSelectedStateFunction}
             >
-              <option hidden value="">
+              {/* <option hidden value="">
                 State List
-              </option>
+              </option> */}
               {stateNew === undefined ? (
                 <option>test</option>
               ) : (
@@ -238,37 +217,9 @@ const MapLocation2 = () => {
               <button onClick={selectedStateFunction}>Select State</button>
             </span>
           </div>
-          <div className="form-group mb-2">
-            <select
-              name="cityNew"
-              className="form-control w-50 "
-              onClick={settingSelectedCity}
-            >
-              <option hidden value="">
-                City List
-              </option>
-              {cityNew === undefined ? (
-                <option>test city</option>
-              ) : (
-                cityNew?.map((city, index) => {
-                  return (
-                    <option key={index} value={city.name}>
-                      {city.name}
-                    </option>
-                  );
-                })
-              )}
-            </select>
-            <span className="">
-              <button onClick={selectedCityFunction}>Select City</button>
-            </span>
-          </div>
-          <button type="submit" className="btn btn-secondary mt-2">
-            Submit to Load Maps
-          </button>
         </form>
         {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-        {/* <form
+        <form
           onSubmit={getLocationCoordinatesFunc}
           className="mb-4 bg-success text-white p-4 border border-primary col-md-6"
         >
@@ -312,7 +263,7 @@ const MapLocation2 = () => {
           <button type="submit" className="btn btn-secondary mt-2">
             Submit
           </button>
-        </form> */}
+        </form>
       </div>
 
       {isLoading ? (
@@ -336,7 +287,7 @@ const MapLocation2 = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Polyline pathOptions={purpleOptions} positions={polyline} />
+
             <MarkerClusterGroup
               chunkedLoading
               iconCreateFunction={createCustomClusterIcon}
@@ -365,7 +316,7 @@ const MapLocation2 = () => {
 };
 
 function MyComponent({ lat, lng }) {
-  const map = useMapEvent("click", () => {
+  const map = useMapEvent("mouseover", () => {
     map.setView([lat, lng], 13, {
       animate: true,
     });
