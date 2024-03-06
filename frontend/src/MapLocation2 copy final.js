@@ -71,7 +71,7 @@ const MapLocation2 = () => {
   const setNewCountry = (e) => {
     e.preventDefault();
     if (e.target.value === "") return;
-    // console.log(e.target.value);
+    console.log(e.target.value);
     let value = e.target.value.split("-");
     setCtyNew(value[0]);
     setCountry(value[1]);
@@ -186,10 +186,7 @@ const MapLocation2 = () => {
   return (
     <div>
       <div className="bg-dark bg-gradient p-5 row justify-content-center ">
-        <form
-          onSubmit={getLocationCoordinatesFunc}
-          className="mb-4 bg-success text-white p-4 border border-primary col-md-6"
-        >
+        <form className="mb-4 bg-success text-white p-4 border border-primary col-md-6">
           <div className="form-group mb-2">
             {/* <label htmlFor="country">Select Country</label> */}
 
@@ -260,15 +257,12 @@ const MapLocation2 = () => {
               )}
             </select>
             <span className="">
-              <button onClick={selectedCityFunction}>Select City</button>
+              <button onClick={selectedCityFunction}>Select State</button>
             </span>
           </div>
-          <button type="submit" className="btn btn-secondary mt-2">
-            Submit to Load Maps
-          </button>
         </form>
         {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-        {/* <form
+        <form
           onSubmit={getLocationCoordinatesFunc}
           className="mb-4 bg-success text-white p-4 border border-primary col-md-6"
         >
@@ -312,7 +306,7 @@ const MapLocation2 = () => {
           <button type="submit" className="btn btn-secondary mt-2">
             Submit
           </button>
-        </form> */}
+        </form>
       </div>
 
       {isLoading ? (
@@ -365,7 +359,7 @@ const MapLocation2 = () => {
 };
 
 function MyComponent({ lat, lng }) {
-  const map = useMapEvent("click", () => {
+  const map = useMapEvent("mouseover", () => {
     map.setView([lat, lng], 13, {
       animate: true,
     });
