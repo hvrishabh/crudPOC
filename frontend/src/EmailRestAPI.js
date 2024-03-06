@@ -49,7 +49,7 @@ const EmailRestAPI = () => {
         <p className="pt-3 text-white fs-3">Customer Contact section</p>
         <form onSubmit={handleSubmit} className="form-group text-white">
           <div>
-            <label className="form-check-label mt-3">Customer Name</label>
+            <label className="form-check-label mt-3">Contact Name</label>
             <input
               className="form-control"
               type="text"
@@ -60,7 +60,7 @@ const EmailRestAPI = () => {
           </div>
           <div>
             <label className="form-check-label mt-3">
-              Customer Email Address
+              Contact Email Address
             </label>
             <input
               className="form-control"
@@ -84,7 +84,7 @@ const EmailRestAPI = () => {
           </div> */}
           <div>
             <label className="form-check-label mt-3">
-              Message you want to send{" "}
+              Your FeedBack Message
             </label>
             <textarea
               className="form-control"

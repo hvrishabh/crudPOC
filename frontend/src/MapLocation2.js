@@ -18,6 +18,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import mapIcon1 from "./assets/mapicon1.png";
 
 import { Country, State, City } from "country-state-city";
+import WakeUpBtn from "./WakeUpBtn";
 
 const MapLocation2 = () => {
   /////////////////// states............................
@@ -190,6 +191,7 @@ const MapLocation2 = () => {
           onSubmit={getLocationCoordinatesFunc}
           className="mb-4 bg-success text-white p-4 border border-primary col-md-6"
         >
+          <h5 className="fs-4 my-3">Mark the places you have visited</h5>
           <div className="form-group mb-2">
             {/* <label htmlFor="country">Select Country</label> */}
 
@@ -266,6 +268,7 @@ const MapLocation2 = () => {
           <button type="submit" className="btn btn-secondary mt-2">
             Submit to Load Maps
           </button>
+          <WakeUpBtn />
         </form>
         {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
         {/* <form

@@ -33,7 +33,7 @@ const App = () => {
             <Route path="/contact" element={<EmailRestAPI />} />
             <Route path="/sendMessage" element={<SendMessage />} />
             <Route path="/map" element={<MapLocation />} />
-            <Route path="/map2" element={<MapLocation2 />} />
+            <Route path="/maps" element={<MapLocation2 />} />
           </Routes>
         </BrowserRouter>
       </MyContext.Provider>

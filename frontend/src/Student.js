@@ -32,7 +32,7 @@ const Student = () => {
   const lastIndex = currentPage * recordsPerPage;
   const firstInedx = lastIndex - recordsPerPage;
   const records = student.slice(firstInedx, lastIndex);
-  const npage = Math.ceil((student.length + 1) / recordsPerPage);
+  const npage = Math.ceil(student.length / recordsPerPage);
   const numbers = [...Array(npage + 1).keys()].slice(1);
 
   function prePage() {
@@ -378,19 +378,28 @@ const Student = () => {
           </div>
         )}
         {!loading && (
-          <div className="my-5">
-            <CSVLink className="btn btn-dark fs-4" data={student}>
+          <div className="mt-4">
+            <CSVLink className="btn btn-dark " data={student}>
               Download the Records
               {/* <CSVDownload data={student} target="_blank" />; */}
             </CSVLink>
           </div>
         )}
 
-        {!loading && (
-          <Link to="contact" className="btn btn-dark">
-            contact Us
-          </Link>
-        )}
+        <div className="mt-2">
+          {!loading && (
+            <Link to="contact" className="btn btn-dark">
+              contact Us
+            </Link>
+          )}
+        </div>
+        <div className="mt-2">
+          {!loading && (
+            <Link to="maps" className="btn btn-dark">
+              Maps Practise API
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
